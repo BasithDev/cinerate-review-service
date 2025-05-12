@@ -1,0 +1,33 @@
+name: Review Service CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'review-service/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'review-service/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+        continue-on-error: false
+      - name: Use Node.js 23
+        uses: actions/setup-node@v4
+        with:
+          node-version: 23
+        continue-on-error: false
+      - name: Install dependencies
+        run: npm install
+        working-directory: review-service
+        continue-on-error: false
+      - name: Run tests
+        run: npm test
+        working-directory: review-service
+        continue-on-error: false
