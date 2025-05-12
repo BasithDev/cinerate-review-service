@@ -2,9 +2,8 @@ name: Review Service CD
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - 'review-service/**'
+    branches:
+      - main
 
 jobs:
   build-and-push:
@@ -24,7 +23,11 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: review-service
+          context: .
+          file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/cinerate-review-service:v1.0.2,${{ secrets.DOCKER_USERNAME }}/cinerate-review-service:${{ github.sha }}
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/cinerate-review-service:latest
+            ${{ secrets.DOCKER_USERNAME }}/cinerate-review-service:v1.0.2
+            ${{ secrets.DOCKER_USERNAME }}/cinerate-review-service:${{ github.sha }}
         continue-on-error: false

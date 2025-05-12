@@ -2,32 +2,39 @@ name: Review Service CI
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - 'review-service/**'
+    branches:
+      - main
+      - dev
   pull_request:
-    branches: [ main ]
-    paths:
-      - 'review-service/**'
+    branches:
+      - main
+      - dev
 
 jobs:
-  test:
+  lint-and-tests:
     runs-on: ubuntu-latest
-    env:
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+    
     steps:
-      - uses: actions/checkout@v4
-        continue-on-error: false
-      - name: Use Node.js 23
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up latest LTS Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 23
-        continue-on-error: false
+          node-version: 'lts/*'
+
       - name: Install dependencies
         run: npm install
-        working-directory: review-service
-        continue-on-error: false
+
+      - name: Run ESLint
+        run: npm run lint
+
       - name: Run tests
         run: npm test
-        working-directory: review-service
-        continue-on-error: false
+
+      - name: Handle Rollback on Failure
+        if: failure()
+        run: |
+          echo "❌ Lint or tests failed. Performing rollback..."
+          # Add real rollback logic here (e.g., git revert, undeploy script, notify team)
+    
