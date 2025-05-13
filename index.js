@@ -112,7 +112,7 @@ async function connectToDatabase(uri) {
     await mongoose.connect(uri, {
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
-      autoReconnect: true,
+      // autoReconnect is deprecated and removed
     });
     console.log('Connected to MongoDB');
   } catch (err) {
@@ -161,7 +161,7 @@ if (require.main === module) {
       console.warn('Review service will run without caching');
     }
     
-    app.listen(PORT, () => {
+    app.server = app.listen(PORT, () => {
       console.log(`Review service running on port ${PORT}`);
     });
   }).catch(err => {
