@@ -2,6 +2,7 @@ const express = require('express');
 const createCacheMiddleware = require('./middleware/cache.middleware');
 const reviewRoutes = require('./routes/review.routes');
 const healthRoutes = require('./routes/health.routes');
+const { metricsMiddleware } = require('./middleware/metrics.middleware');
 
 /**
  * Create and configure Express application
@@ -16,6 +17,7 @@ function createApp() {
   // Apply middlewares
   app.use(express.json());
   app.use(attachRedisCache);
+  app.use(metricsMiddleware);
 
   // Apply routes
   app.use('/', healthRoutes);
