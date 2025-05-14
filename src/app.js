@@ -23,7 +23,10 @@ function createApp() {
   // Apply review routes with cache middleware
   app.use('/', (req, res, next) => {
     // Apply cache middleware only to GET routes for content reviews
-    if (req.method === 'GET' && req.path.match(/^\/[^\/]+\/[^\/]+$/)) {
+    // Exclude health endpoints from caching
+    if (req.method === 'GET' && 
+        req.path.match(/^\/[^/]+\/[^/]+$/) && 
+        !req.path.startsWith('/health')) {
       return cacheRoute(900)(req, res, next);
     }
     next();
